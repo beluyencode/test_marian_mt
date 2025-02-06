@@ -2,10 +2,13 @@ from transformers import MarianMTModel, MarianTokenizer, Seq2SeqTrainer, Seq2Seq
 from datasets import Dataset
 import logging
 import os
+import datetime
 
 # Thiết lập logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
+
+logger.info(datetime.datetime.now())
 
 # Tạo tập dữ liệu từ các tệp văn bản
 def load_data(source_file, target_file):
@@ -15,6 +18,8 @@ def load_data(source_file, target_file):
         tgt_lines = tgt_f.readlines()
     logger.info(f"Loaded {len(src_lines)} source lines and {len(tgt_lines)} target lines")
     return Dataset.from_dict({"translation": [{"en": src.strip(), "vi": tgt.strip()} for src, tgt in zip(src_lines, tgt_lines)]})
+
+print(os.getcwd())
 
 source_file = '../data/train.source'
 target_file = '../data/train.target'
@@ -77,6 +82,8 @@ logger.info("Training completed.")
 model.save_pretrained("../models")
 tokenizer.save_pretrained("../models")
 logger.info("Model and tokenizer saved.")
+
+logger.info(datetime.datetime.now())
 
 # In kết quả huấn luyện
 print(train_result)

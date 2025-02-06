@@ -1,1 +1,4 @@
 results
+/venv
+/__pycache__
+/models

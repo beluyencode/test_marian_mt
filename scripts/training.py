@@ -1,4 +1,10 @@
-from transformers import MarianMTModel, MarianTokenizer, Seq2SeqTrainer, Seq2SeqTrainingArguments, DataCollatorForSeq2Seq
+from transformers import (
+    MarianMTModel,
+    MarianTokenizer,
+    Seq2SeqTrainer,
+    Seq2SeqTrainingArguments,
+    DataCollatorForSeq2Seq
+)
 from datasets import Dataset
 import logging
 import os
@@ -19,7 +25,6 @@ def load_data(source_file, target_file):
     logger.info(f"Loaded {len(src_lines)} source lines and {len(tgt_lines)} target lines")
     return Dataset.from_dict({"translation": [{"en": src.strip(), "vi": tgt.strip()} for src, tgt in zip(src_lines, tgt_lines)]})
 
-print(os.getcwd())
 
 source_file = '../data/train.source'
 target_file = '../data/train.target'
@@ -54,11 +59,11 @@ training_args = Seq2SeqTrainingArguments(
     output_dir="../models",
     evaluation_strategy="epoch",  # Đánh giá mô hình sau mỗi epoch
     save_strategy="epoch", 
-    learning_rate=1e-3,
-    per_device_train_batch_size=8,
-    per_device_eval_batch_size=8,
+    learning_rate=1e-5,
+    per_device_train_batch_size=16,
+    per_device_eval_batch_size=16,
     weight_decay=0.01,
-    num_train_epochs=10,
+    num_train_epochs=3,
     predict_with_generate=True,
 )
 

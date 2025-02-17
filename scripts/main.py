@@ -2,9 +2,8 @@ from transformers import MarianMTModel, MarianTokenizer
 
 src_text = [
     ">>vie<< this is a sentence in English that we want to translate to French",
-    ">>vie<< Sick, cannot suffer",
-    ">>vie<< Puka",
-    ">>vie<< Deep learning is powerful.",
+    ">>vie<< Sick",
+    ">>vie<< long",
 ]
 
 # Specify the multilingual model

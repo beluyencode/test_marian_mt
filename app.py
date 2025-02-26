@@ -26,9 +26,16 @@ model = MarianMTModel.from_pretrained(model_name)
 class TranslationRequest(BaseModel):
     text: str
 
+class TranslationsRequest(BaseModel):
+    source_text: list[str]
+
 class TrainingDataRequest(BaseModel):
     source_text: str
     target_text: str
+
+class TrainingDatasRequest(BaseModel):
+    data: list[TrainingDataRequest]
+    
 
 @app.post("/translate")
 async def translate(request: TranslationRequest):
@@ -37,8 +44,23 @@ async def translate(request: TranslationRequest):
     tgt_text = tokenizer.decode(translated[0], skip_special_tokens=True)
     return {"translation": tgt_text}
 
+@app.post("/translates")
+async def translate(request: TranslationsRequest):
+    inputs = tokenizer([">>vie<< " + text for text in request.source_text], return_tensors="pt", padding=True)
+    logger.info([">>vie<< " + text for text in request.source_text])
+    translated = model.generate(**inputs)
+    tgt_text = [tokenizer.decode(t, skip_special_tokens=True) for t in translated]
+    return {"translation": tgt_text}
+
 @app.post("/add-training-data")
 async def add_training_data(request: TrainingDataRequest):
+    with open("data/train.source", "a", encoding="utf-8") as src_f, open("data/train.target", "a", encoding="utf-8") as tgt_f:
+        src_f.write(request.source_text + "\n")
+        tgt_f.write(request.target_text + "\n")
+    return {"message": "Training data added successfully"}
+
+@app.post("/add-training-datas")
+async def add_training_data(request: TrainingDatasRequest):
     with open("data/train.source", "a", encoding="utf-8") as src_f, open("data/train.target", "a", encoding="utf-8") as tgt_f:
         src_f.write(request.source_text + "\n")
         tgt_f.write(request.target_text + "\n")
